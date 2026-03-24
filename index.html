@@ -602,7 +602,7 @@ async function backupDrive(reason){
   const payload=JSON.stringify(DB);
   const date=new Date().toISOString();
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('https://wispy-rain-c662.ricardoparrillo-rp.workers.dev/',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -1344,7 +1344,7 @@ async function sendChat(override){
   document.getElementById('chat-send').disabled=true;showTyping();
   const apiMsgs=DB.chat.filter(m=>m.role==='user'||m.role==='assistant').slice(-30).map(m=>({role:m.role,content:m.content}));
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
+    const r=await fetch('https://wispy-rain-c662.ricardoparrillo-rp.workers.dev/',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSys(),messages:apiMsgs})
     });
