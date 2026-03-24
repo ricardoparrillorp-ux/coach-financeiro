@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f0f0f">
+<title>Coach — Ricardo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f0f;--s1:#161616;--s2:#1e1e1e;--s3:#272727;--border:#2e2e2e;
+  --accent:#c8f135;--accent-dim:#8aaa1f;
+  --red:#ff4d4d;--yellow:#f5a623;--green:#52c41a;--blue:#4096ff;
+  --text:#f0f0f0;--t2:#aaa;--t3:#666;--t4:#2a2a2a;
+  --font:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:var(--font)}
+
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:560px;margin:0 auto}
+
+/* HEADER */
+#header{flex-shrink:0;padding:12px 16px;background:var(--s1);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#0f0f0f;flex-shrink:0}
+.hinfo{flex:1}
+.hname{font-weight:700;font-size:15px;line-height:1.2}
+.hstatus{font-size:10px;color:var(--t2);margin-top:1px;letter-spacing:.02em}
+#bk-btn{font-size:10px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;white-space:nowrap;font-family:var(--font)}
+#bk-btn.saving{color:var(--yellow);border-color:var(--yellow)}
+.hbtn{font-size:10px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;font-family:var(--font)}
+#bk-btn.saved{color:var(--green);border-color:var(--green)}
+
+/* PAGES */
+#pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;padding:16px;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
+.page.active{display:flex}
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* NAV */
+#nav{display:flex;background:var(--s1);border-top:1px solid var(--border);flex-shrink:0}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 10px;gap:3px;cursor:pointer;border:none;background:none;color:var(--t3);font-size:9px;font-weight:600;letter-spacing:.03em;border-top:2px solid transparent;transition:all .2s;font-family:var(--font)}
+.nb.active{color:var(--accent);border-top-color:var(--accent)}
+.nb svg{width:20px;height:20px;stroke-width:1.8}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card-title{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--t2);text-transform:uppercase;margin-bottom:14px}
+.divider{height:1px;background:var(--border);margin:10px 0}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* STAT TILE */
+.tile{background:var(--s2);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:3px}
+.tile-k{font-size:10px;font-weight:600;color:var(--t2);letter-spacing:.04em;text-transform:uppercase}
+.tile-v{font-size:16px;font-weight:700;color:var(--text)}
+.tile-v.accent{color:var(--accent)}
+.tile-v.red{color:var(--red)}
+.tile-v.yellow{color:var(--yellow)}
+.tile-v.green{color:var(--green)}
+.tile-v.sm{font-size:13px}
+
+/* INPUTS */
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.03em}
+.inp{background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;padding:10px 12px;border-radius:8px;width:100%;outline:none;-webkit-appearance:none;font-weight:500}
+.inp:focus{border-color:var(--accent);background:var(--s1)}
+.inp::placeholder{color:var(--t3);font-weight:400}
+select.inp option{background:var(--s2);color:var(--text)}
+
+/* BUTTONS */
+.btn{border:none;border-radius:8px;cursor:pointer;font-family:var(--font);font-weight:700;font-size:13px;padding:11px 16px;letter-spacing:.02em;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{opacity:.75}
+.btn-accent{background:var(--accent);color:#0f0f0f}
+.btn-ghost{background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.btn-red{background:#ff4d4d22;color:var(--red);border:1px solid #ff4d4d44}
+.btn-full{width:100%}
+.btn-sm{padding:7px 12px;font-size:11px;border-radius:6px}
+
+/* PBAR */
+.pbar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .5s}
+.pbar-fill.warn{background:var(--yellow)}
+.pbar-fill.over{background:var(--green)}
+
+/* BADGE */
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.03em}
+.badge-green{background:#52c41a18;color:var(--green);border:1px solid #52c41a33}
+.badge-yellow{background:#f5a62318;color:var(--yellow);border:1px solid #f5a62333}
+.badge-red{background:#ff4d4d18;color:var(--red);border:1px solid #ff4d4d33}
+
+/* ── CHAT ─────────────────────────────────────── */
+#page-chat{padding:0;gap:0;flex-direction:column}
+#chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+#chat-msgs::-webkit-scrollbar{width:3px}
+#chat-msgs::-webkit-scrollbar-thumb{background:var(--border)}
+.msg{display:flex;flex-direction:column;max-width:88%}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.coach{align-self:flex-start;align-items:flex-start}
+.bubble{padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;font-weight:400}
+.msg.user .bubble{background:#1a2e08;border:1px solid #2a4a10;border-bottom-right-radius:3px}
+.msg.coach .bubble{background:var(--s1);border:1px solid var(--border);border-bottom-left-radius:3px}
+.msg-time{font-size:10px;color:var(--t3);margin-top:3px;font-weight:500}
+.typing-wrap{align-self:flex-start}
+.dots{display:flex;gap:4px;padding:12px 14px;background:var(--s1);border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:3px}
+.dot{width:6px;height:6px;background:var(--t3);border-radius:50%;animation:pulse 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.2)}}
+#chat-bar{padding:10px 12px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+#chat-inp{flex:1;background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:none;max-height:100px;min-height:42px;line-height:1.5;font-weight:400}
+#chat-inp:focus{border-color:var(--accent)}
+#chat-inp::placeholder{color:var(--t3)}
+#chat-send{width:42px;height:42px;background:var(--accent);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#chat-send:disabled{opacity:.3;cursor:not-allowed}
+#chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;text-align:center;padding:40px 32px}
+.ce-icon{font-size:40px}
+.ce-title{font-weight:800;font-size:20px}
+.ce-sub{font-size:13px;color:var(--t2);line-height:1.8;max-width:280px}
+
+/* ── OPERAÇÃO ─────────────────────────────────── */
+/* App selector */
+.app-selector{display:flex;gap:8px;margin-bottom:14px}
+.app-btn{flex:1;padding:10px 6px;background:var(--s2);border:1px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s}
+.app-btn.active{border-color:var(--accent);background:#c8f13510}
+.app-btn-name{font-size:12px;font-weight:700;color:var(--t2)}
+.app-btn.active .app-btn-name{color:var(--accent)}
+.app-btn-val{font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
+.app-btn-corr{font-size:10px;color:var(--t3);margin-top:1px}
+
+/* App entry panel */
+.app-entry{background:var(--s2);border:1px solid var(--accent);border-radius:10px;padding:14px;margin-bottom:14px;display:none}
+.app-entry.show{display:block}
+.app-entry-title{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px;letter-spacing:.03em}
+
+/* Day card */
+.day-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.day-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.day-card-date{font-size:14px;font-weight:700}
+.day-card-liq{font-size:14px;font-weight:700;color:var(--accent)}
+.day-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.day-metric{background:var(--s3);border-radius:6px;padding:6px 8px}
+.day-metric .dk{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em}
+.day-metric .dv{font-size:12px;font-weight:600;margin-top:1px}
+
+/* ── CONTAS ──────────────────────────────────── */
+.conta-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--t4)}
+.conta-row:last-child{border-bottom:none}
+.conta-indicator{width:3px;height:36px;border-radius:2px;flex-shrink:0}
+.conta-indicator.green{background:var(--green)}
+.conta-indicator.yellow{background:var(--yellow)}
+.conta-indicator.red{background:var(--red)}
+.conta-info{flex:1;min-width:0}
+.conta-nome{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conta-det{font-size:11px;color:var(--t2);margin-top:2px}
+.conta-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.conta-val{font-size:14px;font-weight:700}
+.conta-val.red{color:var(--red)}
+.conta-val.yellow{color:var(--yellow)}
+.conta-val.green{color:var(--green)}
+
+/* ── MANUTENÇÃO ───────────────────────────────── */
+.manut-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--t4)}
+.manut-row:last-child{border-bottom:none}
+.manut-icon{width:36px;height:36px;background:var(--s2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.manut-info{flex:1}
+.manut-name{font-size:13px;font-weight:600}
+.manut-det{font-size:11px;color:var(--t2);margin-top:2px}
+.km-bar{height:4px;background:var(--s3);border-radius:2px;overflow:hidden;margin-top:5px;width:100%}
+.km-fill{height:100%;border-radius:2px;background:var(--green);transition:width .5s}
+.km-fill.warn{background:var(--yellow)}
+.km-fill.crit{background:var(--red)}
+.manut-cost{font-size:13px;font-weight:700;color:var(--yellow);text-align:right;flex-shrink:0}
+
+/* ── DASHBOARD ───────────────────────────────── */
+.hero{background:linear-gradient(135deg,#1a2e08,#0f0f0f);border:1px solid #2a4a10;border-radius:14px;padding:22px}
+.hero-label{font-size:11px;font-weight:700;color:var(--accent-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.hero-val{font-size:36px;font-weight:800;color:var(--accent);line-height:1}
+.hero-sub{font-size:12px;color:var(--t2);margin-top:8px}
+
+/* ALERT ITEM */
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--t4)}
+.alert-item:last-child{border-bottom:none}
+.alert-dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);flex-shrink:0;margin-top:4px}
+.alert-dot.red{background:var(--red)}
+.alert-text{font-size:13px;color:var(--text);line-height:1.5}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:flex-end;justify-content:center;padding:0}
+.overlay.show{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:18px}
+.modal-fields{display:flex;flex-direction:column;gap:12px}
+.modal-btns{display:flex;gap:8px;margin-top:20px}
+.modal-btns .btn{flex:1}
+
+/* TOAST */
+#toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;color:var(--text);z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="header">
+    <div class="logo">R</div>
+    <div class="hinfo">
+      <div class="hname">Coach Financeiro</div>
+      <div class="hstatus" id="hstatus">● FASE 1 — SOBREVIVÊNCIA</div>
+    </div>
+    <button id="bk-btn" onclick="manualBackup()">BACKUP</button>
+    <button style="font-size:10px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;font-family:var(--font)" onclick="importBackup()">IMPORTAR</button>
+  </div>
+
+  <div id="pages">
+
+    <!-- ══ CHAT ══ -->
+    <div class="page active" id="page-chat" style="padding:0;gap:0;flex-direction:column">
+      <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div id="chat-empty">
+          <div class="ce-icon">💼</div>
+          <div class="ce-title">Coach Financeiro</div>
+          <div class="ce-sub">Seu mentor com acesso total à operação, contas e carro. Fala comigo.</div>
+        </div>
+      </div>
+      <div id="chat-bar">
+        <textarea id="chat-inp" placeholder="Manda sua mensagem..." rows="1" oninput="resizeInp(this)" onkeydown="chatKey(event)"></textarea>
+        <button id="chat-send" onclick="sendChat()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f0f0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ OPERAÇÃO ══ -->
+    <div class="page" id="page-op">
+
+      <!-- Meta semanal -->
+      <div class="card">
+        <div class="card-title">Meta Semanal</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+          <div><div style="font-size:11px;color:var(--t2);font-weight:600">FATURADO</div><div style="font-size:22px;font-weight:800;color:var(--accent)" id="op-sem-fat">R$ 0</div></div>
+          <div style="text-align:right"><div style="font-size:11px;color:var(--t2);font-weight:600">META</div><div style="font-size:22px;font-weight:800" id="op-sem-meta">R$ 4.000</div></div>
+        </div>
+        <div class="pbar"><div class="pbar-fill" id="op-sem-bar" style="width:0%"></div></div>
+        <div style="font-size:11px;color:var(--t2);margin-top:8px;font-weight:500" id="op-sem-label">Faltam R$ 4.000</div>
+      </div>
+
+      <!-- LISTA DE RECEITAS -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Receitas</div>
+          <button class="btn btn-accent btn-sm" onclick="openAddReceita()">+ ADICIONAR</button>
+        </div>
+        <div id="op-receitas-list">
+          <div style="color:var(--t3);font-size:13px;text-align:center;padding:16px">Nenhuma receita lançada</div>
+        </div>
+      </div>
+
+      <!-- DADOS DO DIA (combustível, km, horas) -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Dados do Dia</div>
+          <button class="btn btn-ghost btn-sm" onclick="openAddDia()">+ LANÇAR</button>
+        </div>
+        <div id="op-dias-list">
+          <div style="color:var(--t3);font-size:13px;text-align:center;padding:16px">Nenhum dia lançado</div>
+        </div>
+      </div>
+
+      <!-- Resumo mês -->
+      <div class="card">
+        <div class="card-title">Resumo do Mês</div>
+        <div class="grid2">
+          <div class="tile"><span class="tile-k">Bruto</span><span class="tile-v accent" id="op-mes-br">R$ 0</span></div>
+          <div class="tile"><span class="tile-k">Líquido</span><span class="tile-v accent" id="op-mes-lq">R$ 0</span></div>
+          <div class="tile"><span class="tile-k">Horas</span><span class="tile-v" id="op-mes-h">0h</span></div>
+          <div class="tile"><span class="tile-k">KM Trabalho</span><span class="tile-v" id="op-mes-km">0 km</span></div>
+          <div class="tile"><span class="tile-k">R$/Hora</span><span class="tile-v" id="op-mes-ph">—</span></div>
+          <div class="tile"><span class="tile-k">Custo/KM</span><span class="tile-v" id="op-mes-ckm">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTAS ══ -->
+    <div class="page" id="page-contas">
+
+      <!-- Resumo -->
+      <div class="card">
+        <div class="card-title">Situação do Mês</div>
+        <div class="grid2">
+          <div class="tile"><span class="tile-k">Total a Pagar</span><span class="tile-v red" id="ct-total">R$ 0</span></div>
+          <div class="tile"><span class="tile-k">Já Pago</span><span class="tile-v green" id="ct-pago">R$ 0</span></div>
+          <div class="tile"><span class="tile-k">Em Aberto</span><span class="tile-v yellow" id="ct-aberto">R$ 0</span></div>
+          <div class="tile"><span class="tile-k">Atrasado</span><span class="tile-v red" id="ct-atrasado">R$ 0</span></div>
+        </div>
+      </div>
+
+      <!-- ATRASADAS -->
+      <div class="card" id="ct-card-vencidas" style="border-color:#ff4d4d55;display:none">
+        <div class="card-title" style="color:var(--red)">⚠ Atrasadas</div>
+        <div id="ct-list-vencidas"></div>
+      </div>
+
+      <!-- VARIÁVEIS -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Gastos Variáveis</div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-var')">+ Lançar</button>
+        </div>
+        <div id="ct-list-vars"></div>
+      </div>
+
+      <!-- FIXAS -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Contas Fixas</div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-fixa')">+ Adicionar</button>
+        </div>
+        <div id="ct-list-fixas"></div>
+      </div>
+    </div>
+
+    <!-- ══ CARRO ══ -->
+    <div class="page" id="page-manut">
+
+      <!-- Odômetro -->
+      <div class="card" style="border-color:#c8f13533">
+        <div class="card-title">Odômetro</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px">
+          <div><div style="font-size:11px;color:var(--t2);font-weight:600;margin-bottom:4px">KM ATUAL</div><div style="font-size:28px;font-weight:800;color:var(--accent)" id="mn-km-atual">—</div></div>
+          <div style="text-align:right"><div style="font-size:10px;color:var(--t3)">Registrado em</div><div style="font-size:12px;color:var(--t2);font-weight:600" id="mn-km-data">—</div></div>
+        </div>
+        <div class="grid2" style="margin-bottom:12px">
+          <div class="field"><label>KM ATUAL</label><input type="number" class="inp" id="mn-km-inp" inputmode="numeric" placeholder="Ex: 122362"></div>
+          <div class="field"><label>DATA</label><input type="date" class="inp" id="mn-km-date"></div>
+        </div>
+        <button class="btn btn-accent btn-full" onclick="salvarOdometro()">REGISTRAR</button>
+        <div style="margin-top:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.04em;margin-bottom:8px">REGISTROS</div>
+          <div id="mn-odo-hist"></div>
+        </div>
+      </div>
+
+      <!-- KM do mês -->
+      <div class="card">
+        <div class="card-title">Análise do Mês</div>
+        <div class="grid2">
+          <div class="tile"><span class="tile-k">KM Total</span><span class="tile-v" id="mn-km-tot">—</span></div>
+          <div class="tile"><span class="tile-k">KM Trabalho</span><span class="tile-v" id="mn-km-trab">—</span></div>
+          <div class="tile"><span class="tile-k">KM Pessoal</span><span class="tile-v yellow" id="mn-km-pes">—</span></div>
+          <div class="tile"><span class="tile-k">Custo Comb/KM</span><span class="tile-v" id="mn-comb-km">—</span></div>
+          <div class="tile" style="grid-column:1/-1"><span class="tile-k">Custo Operacional/KM</span><span class="tile-v accent" id="mn-op-km">—</span></div>
+        </div>
+      </div>
+
+      <!-- Próximas -->
+      <div class="card">
+        <div class="card-title">Próximas Manutenções</div>
+        <div id="mn-proximas"></div>
+      </div>
+
+      <!-- Histórico -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Histórico</div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-manut')">+ Lançar</button>
+        </div>
+        <div id="mn-hist"></div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="page" id="page-dash">
+      <div class="hero">
+        <div class="hero-label">Sobra Real do Mês</div>
+        <div class="hero-val" id="d-sobra">R$ 0</div>
+        <div class="hero-sub" id="d-sobra-sub">Líquido − contas − variáveis</div>
+      </div>
+      <div class="grid2">
+        <div class="tile"><span class="tile-k">Bruto Mês</span><span class="tile-v accent" id="d-bruto">R$ 0</span></div>
+        <div class="tile"><span class="tile-k">Líquido Mês</span><span class="tile-v" id="d-liq">R$ 0</span></div>
+        <div class="tile"><span class="tile-k">Total Dívidas</span><span class="tile-v red" id="d-div">R$ 0</span></div>
+        <div class="tile"><span class="tile-k">Já Pago</span><span class="tile-v green" id="d-pago">R$ 0</span></div>
+        <div class="tile"><span class="tile-k">Custo Comb/KM</span><span class="tile-v" id="d-ckm">—</span></div>
+        <div class="tile"><span class="tile-k">Custo Op/KM</span><span class="tile-v" id="d-okm">—</span></div>
+      </div>
+      <!-- Meta mensal -->
+      <div class="card">
+        <div class="card-title">Meta Mensal</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:12px;color:var(--t2);font-weight:600" id="d-meta-lbl">R$ 0 de R$ 13.500</span>
+          <span style="font-size:12px;color:var(--accent);font-weight:700" id="d-meta-pct">0%</span>
+        </div>
+        <div class="pbar"><div class="pbar-fill" id="d-meta-bar" style="width:0%"></div></div>
+      </div>
+      <!-- Alertas -->
+      <div class="card" id="d-alert-card">
+        <div class="card-title" style="color:var(--yellow)">⚠ Alertas</div>
+        <div id="d-alerts"></div>
+      </div>
+      <!-- Próximos vencimentos -->
+      <div class="card">
+        <div class="card-title">Próximos Vencimentos</div>
+        <div id="d-proximos"></div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+
+  <nav id="nav">
+    <button class="nb active" onclick="goPage('chat',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      COACH
+    </button>
+    <button class="nb" onclick="goPage('op',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      OPERAÇÃO
+    </button>
+    <button class="nb" onclick="goPage('contas',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      CONTAS
+    </button>
+    <button class="nb" onclick="goPage('manut',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      CARRO
+    </button>
+    <button class="nb" onclick="goPage('dash',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      DASH
+    </button>
+  </nav>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══ MODAIS ══ -->
+<div class="overlay" id="modal-fixa">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nova Conta Fixa</div>
+    <div class="modal-fields">
+      <div class="field"><label>NOME</label><input class="inp" id="mf-nome" placeholder="Ex: Aluguel"></div>
+      <div class="field"><label>VALOR R$</label><input class="inp" id="mf-val" type="number" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>DIA DE VENCIMENTO</label><input class="inp" id="mf-dia" type="number" inputmode="numeric" placeholder="Ex: 5" min="1" max="31"></div>
+      <div class="field"><label>PRIORIDADE</label>
+        <select class="inp" id="mf-prio">
+          <option value="1">🔴 Alta — pagar primeiro</option>
+          <option value="2">🟡 Média</option>
+          <option value="3">🟢 Normal</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-fixa')">Cancelar</button>
+      <button class="btn btn-accent" onclick="salvarFixa()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-pag">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mpag-title">Registrar Pagamento</div>
+    <div class="modal-fields">
+      <div class="field"><label>DATA DO PAGAMENTO</label><input class="inp" id="mpag-data" type="date"></div>
+      <div class="field"><label>VALOR PAGO R$</label><input class="inp" id="mpag-val" type="number" inputmode="decimal"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pag')">Cancelar</button>
+      <button class="btn btn-accent" onclick="confirmarPag()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-var">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Gasto Variável</div>
+    <div class="modal-fields">
+      <div class="field"><label>DESCRIÇÃO</label><input class="inp" id="mv-desc" placeholder="Ex: Mercado"></div>
+      <div class="field"><label>VALOR R$</label><input class="inp" id="mv-val" type="number" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>DATA</label><input class="inp" id="mv-data" type="date"></div>
+      <div class="field"><label>STATUS</label>
+        <select class="inp" id="mv-pago">
+          <option value="1">✅ Pago</option>
+          <option value="0">⏳ Em aberto</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-var')">Cancelar</button>
+      <button class="btn btn-accent" onclick="salvarVar()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-manut">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Lançar Manutenção</div>
+    <div class="modal-fields">
+      <div class="field"><label>TIPO DE MANUTENÇÃO</label><input class="inp" id="mn-tipo" placeholder="Ex: Troca de óleo, Pneu dianteiro..."></div>
+      <div class="field"><label>DESCRIÇÃO</label><input class="inp" id="mn-desc" placeholder="Opcional"></div>
+      <div class="field"><label>CUSTO TOTAL R$</label><input class="inp" id="mn-custo" type="number" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>KM NO MOMENTO</label><input class="inp" id="mn-km-reg" type="number" inputmode="numeric" placeholder="Ex: 115000"></div>
+      <div class="field"><label>DATA</label><input class="inp" id="mn-data" type="date"></div>
+      <div class="field"><label>PRÓX. TROCA EM (KM)</label><input class="inp" id="mn-prox" type="number" inputmode="numeric" placeholder="Ex: 125000"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-manut')">Cancelar</button>
+      <button class="btn btn-accent" onclick="salvarManut()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Receita (adicionar/editar) -->
+<div class="overlay" id="modal-receita">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mrc-title">Adicionar Receita</div>
+    <input type="hidden" id="mrc-id">
+    <div class="modal-fields">
+      <div class="field"><label>FONTE</label>
+        <select class="inp" id="mrc-fonte">
+          <option value="Uber">Uber</option>
+          <option value="99 Pop">99 Pop</option>
+          <option value="inDrive">inDrive</option>
+        </select>
+      </div>
+      <div class="field"><label>VALOR BRUTO R$</label><input class="inp" id="mrc-val" type="number" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>CORRIDAS</label><input class="inp" id="mrc-corr" type="number" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><label>DATA</label><input class="inp" id="mrc-data" type="date"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-receita')">Cancelar</button>
+      <button class="btn btn-accent" onclick="salvarReceita()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dia (combustível, km, horas) -->
+<div class="overlay" id="modal-dia">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mdia-title">Dados do Dia</div>
+    <input type="hidden" id="mdia-id">
+    <div class="modal-fields">
+      <div class="field"><label>DATA</label><input class="inp" id="mdia-data" type="date"></div>
+      <div class="grid2">
+        <div class="field"><label>HORA INÍCIO</label><input class="inp" id="mdia-hi" type="time" value="00:00"></div>
+        <div class="field"><label>HORA FIM</label><input class="inp" id="mdia-hf" type="time" value="00:00"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>KM RODADOS</label><input class="inp" id="mdia-km" type="number" inputmode="numeric" placeholder="0"></div>
+        <div class="field"><label>COMBUSTÍVEL R$</label><input class="inp" id="mdia-comb" type="number" inputmode="decimal" placeholder="0,00"></div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('modal-dia')">Cancelar</button>
+      <button class="btn btn-accent" onclick="salvarDiaDados()">Salvar</button>
+    </div>
+  </div>
+</div>
+<script>
+// ══ ESTADO ══
+const KEY='rcf_v2';
+let DB={
+  chat:[],operacao:[],contasFixas:[],pagamentos:{},
+  variaveis:[],manutencoes:[],odometro:[],
+  metaSemanal:4000,metaMensal:13500,msgCount:0,
+  receitas:[],dias:[]
+};
+let currentApp=null,pagandoId=null;
+
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+function loadLocal(){try{const d=localStorage.getItem(KEY);if(d)DB={...DB,...JSON.parse(d)}}catch(e){}}
+
+// ══ BACKUP LOCAL ══
+// ══ BACKUP — DUPLO (Drive + Download) ══
+let bkPending=false;
+let bkDriveOk=false;
+
+function scheduleBackup(reason){
+  saveLocal(); // sempre salva local imediatamente
+  if(bkPending)return;
+  bkPending=true;
+  setTimeout(async()=>{
+    await backupDrive(reason);
+    bkPending=false;
+  },1500);
+}
+
+async function backupDrive(reason){
+  const btn=document.getElementById('bk-btn');
+  const payload=JSON.stringify(DB);
+  const date=new Date().toISOString();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        system:`Você tem acesso ao Google Drive do usuário via MCP. 
+Sua única tarefa: salvar ou atualizar um arquivo chamado "coach_ricardo_backup.json" na raiz do Google Drive com o conteúdo JSON fornecido.
+Se o arquivo já existir, SUBSTITUA o conteúdo. Se não existir, CRIE.
+Responda apenas: BACKUP_OK ou BACKUP_FAIL.`,
+        messages:[{role:'user',content:`SALVAR BACKUP - ${reason} - ${date}\n\nCONTEÚDO:\n${payload}`}],
+        mcp_servers:[{type:'url',url:'https://drive.mcp.claude.com/mcp',name:'gdrive'}]
+      })
+    });
+    const data=await res.json();
+    const txt=JSON.stringify(data);
+    if(txt.includes('BACKUP_OK')||txt.includes('criado')||txt.includes('salvo')||txt.includes('atualizado')){
+      bkDriveOk=true;
+      btn.textContent='DRIVE ✓';btn.className='saved';
+      localStorage.setItem('last_drive_backup',new Date().toISOString());
+      setTimeout(()=>{btn.textContent='BACKUP';btn.className=''},3000);
+    } else {
+      throw new Error('drive_fail');
+    }
+  }catch(e){
+    // Drive falhou — indica mas não trava
+    bkDriveOk=false;
+    btn.textContent='LOCAL ✓';btn.className='saved';
+    setTimeout(()=>{btn.textContent='BACKUP';btn.className=''},2500);
+    console.warn('Drive backup failed, local only:', e.message);
+  }
+}
+
+async function manualBackup(){
+  saveLocal();
+  // 1. Tenta Drive
+  await backupDrive('manual');
+  // 2. Sempre baixa arquivo também (backup 2)
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const dateStr=new Date().toISOString().split('T')[0];
+  a.download=`coach_ricardo_${dateStr}.json`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Backup: Drive + arquivo baixado!',3000);
+}
+
+function importBackup(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const parsed=JSON.parse(ev.target.result);
+        DB={...DB,...parsed};saveLocal();
+        renderChat();renderOp();renderContas();renderManut();renderDash();
+        toast('Backup restaurado com sucesso!');
+      }catch(ex){toast('Arquivo inválido. Verifica o arquivo.');}
+    };reader.readAsText(file);
+  };inp.click();
+}
+
+// Verifica última vez que Drive foi atualizado
+function checkDriveStatus(){
+  const last=localStorage.getItem('last_drive_backup');
+  const btn=document.getElementById('bk-btn');
+  if(last){
+    const diff=(Date.now()-new Date(last).getTime())/(1000*60*60);
+    if(diff<1)btn.title='Drive atualizado há menos de 1h';
+    else if(diff<24)btn.title=`Drive atualizado há ${Math.floor(diff)}h`;
+    else btn.title='Drive desatualizado — faça backup';
+  }
+}
+
+function scheduleMidnight(){
+  const now=new Date(),mid=new Date(now);mid.setHours(24,0,0,0);
+  setTimeout(()=>{scheduleBackup('midnight');scheduleMidnight();},mid-now);
+}
+
+// ══ NAV ══
+function goPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='op')renderOp();
+  if(name==='contas')renderContas();
+  if(name==='manut')renderManut();
+  if(name==='dash')renderDash();
+}
+
+// ══ UTILS ══
+function fmtR(n,decimals=2){return'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:decimals,maximumFractionDigits:decimals})}
+function fmtK(n){const v=Number(n||0);if(v>=1000)return'R$ '+v.toLocaleString('pt-BR',{maximumFractionDigits:0});return fmtR(v)}
+function today(){return new Date().toISOString().split('T')[0]}
+function ts(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function mesAtual(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`}
+function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)}
+function openModal(id){document.getElementById(id).classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function resizeInp(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
+function esc(t){
+  let s=String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Remove markdown
+  s=s.replace(/#{1,3}\s*/g,'');
+  s=s.replace(/\*\*(.+?)\*\*/g,'$1');
+  s=s.replace(/\*(.+?)\*/g,'$1');
+  s=s.replace(/---+/g,'').replace(/___+/g,'');
+  // Destaca títulos em MAIÚSCULAS seguidos de : no início de linha
+  s=s.replace(/(^|\n)([A-ZÁÉÍÓÚÀÂÊÔÃÕÇ][A-ZÁÉÍÓÚÀÂÊÔÃÕÇ\s]{3,}:)/g,
+    '$1<span style="color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.06em;display:block;margin-top:10px">$2</span>');
+  s=s.replace(/\n/g,'<br>');
+  return s;
+}
+
+// ══ OPERAÇÃO — RECEITAS ══
+let editingReceita = null;
+let editingDia = null;
+
+function semanaAtual(){
+  const hoje=new Date(),dia=hoje.getDay();
+  const ini=new Date(hoje);ini.setDate(hoje.getDate()-(dia===0?6:dia-1));
+  const fim=new Date(ini);fim.setDate(ini.getDate()+6);
+  const is=ini.toISOString().split('T')[0],fs=fim.toISOString().split('T')[0];
+  const receitas=DB.receitas||[];
+  const bruto=receitas.filter(r=>r.data>=is&&r.data<=fs).reduce((s,r)=>s+r.valor,0);
+  return{bruto,ini:is,fim:fs};
+}
+
+function openAddReceita(){
+  editingReceita=null;
+  document.getElementById('mrc-title').textContent='Adicionar Receita';
+  document.getElementById('mrc-id').value='';
+  document.getElementById('mrc-fonte').value='Uber';
+  document.getElementById('mrc-val').value='';
+  document.getElementById('mrc-corr').value='';
+  document.getElementById('mrc-data').value=today();
+  openModal('modal-receita');
+}
+
+function openEditReceita(id){
+  const r=(DB.receitas||[]).find(x=>x.id===id);
+  if(!r)return;
+  editingReceita=id;
+  document.getElementById('mrc-title').textContent='Editar Receita';
+  document.getElementById('mrc-id').value=id;
+  document.getElementById('mrc-fonte').value=r.fonte;
+  document.getElementById('mrc-val').value=r.valor;
+  document.getElementById('mrc-corr').value=r.corridas||0;
+  document.getElementById('mrc-data').value=r.data;
+  openModal('modal-receita');
+}
+
+function salvarReceita(){
+  const fonte=document.getElementById('mrc-fonte').value;
+  const valor=parseFloat(document.getElementById('mrc-val').value);
+  const corridas=parseInt(document.getElementById('mrc-corr').value)||0;
+  const data=document.getElementById('mrc-data').value;
+  if(!valor||!data){toast('Preenche valor e data');return;}
+  if(!DB.receitas)DB.receitas=[];
+  const id=editingReceita||('r'+Date.now());
+  const reg={id,fonte,valor,corridas,data,mes:data.substring(0,7)};
+  if(editingReceita){
+    const idx=DB.receitas.findIndex(x=>x.id===editingReceita);
+    if(idx>=0)DB.receitas[idx]=reg;
+  } else {
+    DB.receitas.push(reg);
+  }
+  DB.receitas.sort((a,b)=>b.data.localeCompare(a.data));
+  closeModal('modal-receita');
+  editingReceita=null;
+  saveLocal();scheduleBackup('receita');renderOp();
+  toast(editingReceita?'Receita atualizada!':'Receita salva!');
+}
+
+function excluirReceita(id){
+  if(!confirm('Excluir esta receita?'))return;
+  DB.receitas=(DB.receitas||[]).filter(r=>r.id!==id);
+  saveLocal();scheduleBackup('excluir_receita');renderOp();toast('Removido!');
+}
+
+function openAddDia(){
+  editingDia=null;
+  document.getElementById('mdia-title').textContent='Dados do Dia';
+  document.getElementById('mdia-id').value='';
+  document.getElementById('mdia-data').value=today();
+  document.getElementById('mdia-hi').value='00:00';
+  document.getElementById('mdia-hf').value='00:00';
+  document.getElementById('mdia-km').value='';
+  document.getElementById('mdia-comb').value='';
+  openModal('modal-dia');
+}
+
+function openEditDia(id){
+  const d=(DB.dias||[]).find(x=>x.id===id);
+  if(!d)return;
+  editingDia=id;
+  document.getElementById('mdia-title').textContent='Editar Dia';
+  document.getElementById('mdia-id').value=id;
+  document.getElementById('mdia-data').value=d.data;
+  document.getElementById('mdia-hi').value=d.hi||'00:00';
+  document.getElementById('mdia-hf').value=d.hf||'00:00';
+  document.getElementById('mdia-km').value=d.km||'';
+  document.getElementById('mdia-comb').value=d.combustivel||'';
+  openModal('modal-dia');
+}
+
+function salvarDiaDados(){
+  const data=document.getElementById('mdia-data').value;
+  const hi=document.getElementById('mdia-hi').value;
+  const hf=document.getElementById('mdia-hf').value;
+  const km=parseFloat(document.getElementById('mdia-km').value)||0;
+  const combustivel=parseFloat(document.getElementById('mdia-comb').value)||0;
+  if(!data){toast('Seleciona a data');return;}
+  let horas=0;
+  if(hi&&hf){
+    const[hhi,mhi]=hi.split(':').map(Number),[hhf,mhf]=hf.split(':').map(Number);
+    horas=((hhf*60+mhf)-(hhi*60+mhi))/60;if(horas<0)horas+=24;
+  }
+  if(!DB.dias)DB.dias=[];
+  const id=editingDia||('d'+Date.now());
+  const reg={id,data,hi,hf,km,combustivel,horas,mes:data.substring(0,7)};
+  if(editingDia){
+    const idx=DB.dias.findIndex(x=>x.id===editingDia);
+    if(idx>=0)DB.dias[idx]=reg;
+  } else {
+    // Se já existe dia com essa data, atualiza
+    const existIdx=DB.dias.findIndex(x=>x.data===data);
+    if(existIdx>=0)DB.dias[existIdx]=reg;
+    else DB.dias.push(reg);
+  }
+  closeModal('modal-dia');
+  editingDia=null;
+  saveLocal();scheduleBackup('dia_dados');renderOp();
+  // Notifica coach
+  const mes=data.substring(0,7);
+  const receitasDia=(DB.receitas||[]).filter(r=>r.data===data);
+  const brutoDia=receitasDia.reduce((s,r)=>s+r.valor,0);
+  const liqDia=brutoDia-combustivel;
+  const ph=horas>0?liqDia/horas:0;
+  const cpkm=km>0?combustivel/km:0;
+  const sem=semanaAtual();
+  if(brutoDia>0){
+    const apps=receitasDia.map(r=>`${r.fonte}: ${fmtR(r.valor)} (${r.corridas||0} corridas)`).join(' | ');
+    sendChat(`REGISTRO ${data}:\n${apps}\nBruto: ${fmtR(brutoDia)} | Comb: ${fmtR(combustivel)} | Líquido: ${fmtR(liqDia)}\nHoras: ${horas.toFixed(1)}h | KM: ${km} | R$/h: ${fmtR(ph)} | Custo/km: R$${cpkm.toFixed(3)}/km\nSemana: ${fmtR(sem.bruto)} de ${fmtR(DB.metaSemanal)}\nAnalisa e diz o próximo passo.`);
+  }
+  toast('Dia salvo!');
+}
+
+function excluirDia(id){
+  if(!confirm('Excluir este dia?'))return;
+  DB.dias=(DB.dias||[]).filter(d=>d.id!==id);
+  saveLocal();scheduleBackup('excluir_dia');renderOp();toast('Removido!');
+}
+
+const APP_COLORS={'Uber':'#276EF1','99 Pop':'#FFD700','inDrive':'#00B14F'};
+const APP_ICONS={'Uber':'🚗','99 Pop':'🟡','inDrive':'🟢'};
+
+function renderOp(){
+  if(!DB.receitas)DB.receitas=[];
+  if(!DB.dias)DB.dias=[];
+  const mes=mesAtual();
+
+  // Receitas do mês
+  const recMes=DB.receitas.filter(r=>r.mes===mes);
+  const brutMes=recMes.reduce((s,r)=>s+r.valor,0);
+  const diasMes=DB.dias.filter(d=>d.mes===mes);
+  const combMes=diasMes.reduce((s,d)=>s+d.combustivel,0);
+  const liqMes=brutMes-combMes;
+  const hMes=diasMes.reduce((s,d)=>s+d.horas,0);
+  const kmMes=diasMes.reduce((s,d)=>s+d.km,0);
+  const ph=hMes>0?liqMes/hMes:0,cpkm=kmMes>0?combMes/kmMes:0;
+
+  document.getElementById('op-mes-br').textContent=fmtK(brutMes);
+  document.getElementById('op-mes-lq').textContent=fmtK(liqMes);
+  document.getElementById('op-mes-h').textContent=hMes.toFixed(1)+'h';
+  document.getElementById('op-mes-km').textContent=kmMes+' km';
+  document.getElementById('op-mes-ph').textContent=hMes>0?fmtR(ph)+'/h':'—';
+  document.getElementById('op-mes-ckm').textContent=kmMes>0?'R$ '+cpkm.toFixed(3)+'/km':'—';
+
+  // Semana
+  const sem=semanaAtual();
+  const pct=Math.min(100,(sem.bruto/DB.metaSemanal)*100);
+  document.getElementById('op-sem-fat').textContent=fmtK(sem.bruto);
+  const bar=document.getElementById('op-sem-bar');
+  bar.style.width=pct+'%';bar.className='pbar-fill'+(pct>=100?' over':pct>=70?' warn':'');
+  document.getElementById('op-sem-label').textContent=pct>=100?'✅ Meta batida!':'Faltam '+fmtR(Math.max(0,DB.metaSemanal-sem.bruto));
+
+  // Lista receitas (todas, ordenadas por data desc)
+  const rl=document.getElementById('op-receitas-list');
+  if(!DB.receitas.length){
+    rl.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:16px">Nenhuma receita lançada</div>';
+  } else {
+    // Header da tabela
+    rl.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:4px">
+        <span style="font-size:10px;font-weight:700;color:var(--t3)">FONTE</span>
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-align:right">VALOR</span>
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-align:center">DATA</span>
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-align:center">AÇÕES</span>
+      </div>
+      ${DB.receitas.map(r=>{
+        const [,mm,dd]=r.data.split('-');
+        return `<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--t4)">
+          <div>
+            <div style="font-size:14px;font-weight:600">${r.fonte}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:1px">${r.corridas||0} corridas</div>
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--accent);text-align:right">${fmtR(r.valor)}</div>
+          <div style="font-size:11px;color:var(--t2);text-align:center;padding:0 6px">${dd}/${mm}</div>
+          <div style="display:flex;gap:6px">
+            <button onclick="openEditReceita('${r.id}')" style="background:var(--s2);border:1px solid var(--border);color:var(--t2);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">✏️</button>
+            <button onclick="excluirReceita('${r.id}')" style="background:#ff4d4d15;border:1px solid #ff4d4d33;color:var(--red);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">🗑️</button>
+          </div>
+        </div>`;
+      }).join('')}
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);margin-top:4px">
+        <span style="font-size:11px;font-weight:700;color:var(--t2)">${DB.receitas.length} registros</span>
+        <span style="font-size:14px;font-weight:700;color:var(--accent)">${fmtR(DB.receitas.reduce((s,r)=>s+r.valor,0))}</span>
+      </div>`;
+  }
+
+  // Lista dias
+  const dl=document.getElementById('op-dias-list');
+  if(!DB.dias.length){
+    dl.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:16px">Nenhum dia lançado</div>';
+  } else {
+    const sorted=[...DB.dias].sort((a,b)=>b.data.localeCompare(a.data));
+    dl.innerHTML=sorted.map(d=>{
+      const [,mm,dd]=d.data.split('-');
+      const recDia=(DB.receitas||[]).filter(r=>r.data===d.data);
+      const brutDia=recDia.reduce((s,r)=>s+r.valor,0);
+      const liq=brutDia-d.combustivel;
+      const ph2=d.horas>0?liq/d.horas:0;
+      return `<div style="background:var(--s2);border-radius:10px;padding:12px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:14px;font-weight:700">${dd}/${mm}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:14px;font-weight:700;color:var(--accent)">${fmtR(liq)}</span>
+            <button onclick="openEditDia('${d.id}')" style="background:var(--s3);border:1px solid var(--border);color:var(--t2);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:12px">✏️</button>
+            <button onclick="excluirDia('${d.id}')" style="background:#ff4d4d15;border:1px solid #ff4d4d33;color:var(--red);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:12px">🗑️</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+          <div style="background:var(--s3);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:600;color:var(--t3)">COMB</div><div style="font-size:12px;font-weight:600">−${fmtK(d.combustivel)}</div></div>
+          <div style="background:var(--s3);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:600;color:var(--t3)">KM</div><div style="font-size:12px;font-weight:600">${d.km||0}</div></div>
+          <div style="background:var(--s3);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:600;color:var(--t3)">HORAS</div><div style="font-size:12px;font-weight:600">${(d.horas||0).toFixed(1)}h</div></div>
+          ${ph2>0?`<div style="background:var(--s3);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:600;color:var(--t3)">R$/H</div><div style="font-size:12px;font-weight:600;color:var(--accent)">${fmtK(ph2)}</div></div>`:''}
+          ${d.km>0?`<div style="background:var(--s3);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:600;color:var(--t3)">C/KM</div><div style="font-size:12px;font-weight:600">R$${(d.combustivel/d.km).toFixed(2)}</div></div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ══ CONTAS ══
+function statusConta(c){
+  const pag=DB.pagamentos[c.id+'_'+mesAtual()];
+  if(pag)return'pago';
+  return c.dia<new Date().getDate()?'vencido':'aberto';
+}
+function diasVencer(dia){
+  const hoje=new Date();let v=new Date(hoje.getFullYear(),hoje.getMonth(),dia);
+  if(v<hoje)v=new Date(hoje.getFullYear(),hoje.getMonth()+1,dia);
+  return Math.ceil((v-hoje)/(864e5));
+}
+function openPag(id,nome,val){
+  pagandoId=id;
+  document.getElementById('mpag-title').textContent='Pagar: '+nome;
+  document.getElementById('mpag-val').value=val;
+  document.getElementById('mpag-data').value=today();
+  openModal('modal-pag');
+}
+function confirmarPag(){
+  if(!pagandoId)return;
+  DB.pagamentos[pagandoId+'_'+mesAtual()]={data:document.getElementById('mpag-data').value,valor:parseFloat(document.getElementById('mpag-val').value)};
+  closeModal('modal-pag');pagandoId=null;
+  saveLocal();scheduleBackup('pagamento');renderContas();toast('Pagamento registrado!');
+}
+function salvarFixa(){
+  const nome=document.getElementById('mf-nome').value.trim();
+  const val=parseFloat(document.getElementById('mf-val').value);
+  const dia=parseInt(document.getElementById('mf-dia').value);
+  const prio=parseInt(document.getElementById('mf-prio').value);
+  if(!nome||!val||!dia){toast('Preenche todos os campos');return}
+  if(editandoFixaId){
+    const idx=DB.contasFixas.findIndex(x=>x.id===editandoFixaId);
+    if(idx>=0) DB.contasFixas[idx]={...DB.contasFixas[idx],nome,valor:val,dia,prio};
+    editandoFixaId=null;toast('Conta atualizada!');
+  } else {
+    DB.contasFixas.push({id:'f'+Date.now(),nome,valor:val,dia,prio});
+    toast('Conta adicionada!');
+  }
+  DB.contasFixas.sort((a,b)=>a.prio-b.prio||a.dia-b.dia);
+  closeModal('modal-fixa');
+  ['mf-nome','mf-val','mf-dia'].forEach(id=>document.getElementById(id).value='');
+  saveLocal();scheduleBackup('salvar_fixa');renderContas();
+}
+function salvarVar(){
+  const desc=document.getElementById('mv-desc').value.trim();
+  const val=parseFloat(document.getElementById('mv-val').value);
+  const data=document.getElementById('mv-data').value;
+  const pago=document.getElementById('mv-pago').value==='1';
+  if(!desc||!val){toast('Preenche descrição e valor');return}
+  const mes=data?data.substring(0,7):mesAtual();
+  DB.variaveis.push({id:'v'+Date.now(),desc,valor:val,data,pago,mes});
+  closeModal('modal-var');
+  ['mv-desc','mv-val'].forEach(id=>document.getElementById(id).value='');
+  saveLocal();scheduleBackup('gasto_variavel');renderContas();toast('Gasto lançado!');
+}
+
+function renderContas(){
+  const mes=mesAtual();
+  let total=0,pago=0,aberto=0,atrasado=0;
+  const vencidas=[];
+  DB.contasFixas.forEach(c=>{
+    total+=c.valor;
+    const st=statusConta(c);
+    if(st==='pago')pago+=c.valor;
+    else if(st==='vencido'){atrasado+=c.valor;vencidas.push(c);}
+    else aberto+=c.valor;
+  });
+  document.getElementById('ct-total').textContent=fmtK(total);
+  document.getElementById('ct-pago').textContent=fmtK(pago);
+  document.getElementById('ct-aberto').textContent=fmtK(aberto);
+  document.getElementById('ct-atrasado').textContent=fmtK(atrasado);
+
+  // Vencidas
+  const vc=document.getElementById('ct-card-vencidas');
+  const vl=document.getElementById('ct-list-vencidas');
+  if(vencidas.length){
+    vc.style.display='block';
+    vl.innerHTML=vencidas.map(c=>contaRow(c,'vencido',mes)).join('');
+  }else vc.style.display='none';
+
+  // Variáveis
+  const vars=DB.variaveis.filter(v=>v.mes===mes);
+  const vl2=document.getElementById('ct-list-vars');
+  if(!vars.length){vl2.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:12px">Nenhum lançamento</div>';}
+  else{
+    const tot=vars.reduce((s,v)=>s+v.valor,0);
+    vl2.innerHTML=vars.slice().reverse().map(v=>`<div class="conta-row">
+      <div class="conta-indicator ${v.pago?'green':'yellow'}" style="cursor:pointer" onclick="toggleVarPago('${v.id}')" title="Clique para alternar pago/aberto"></div>
+      <div class="conta-info"><div class="conta-nome">${v.desc}</div><div class="conta-det">${v.data||'—'} · ${v.pago?'✅ Pago':'⏳ Em aberto'}</div></div>
+      <div class="conta-right">
+        <div class="conta-val">${fmtR(v.valor)}</div>
+        <button class="btn btn-sm" onclick="deleteVar('${v.id}')" style="padding:3px 7px;margin-top:4px;background:#ff4d4d18;color:var(--red);border:1px solid #ff4d4d33;font-size:11px">🗑</button>
+      </div>
+    </div>`).join('')+
+    `<div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);margin-top:4px">
+      <span style="font-size:11px;font-weight:700;color:var(--t2)">TOTAL</span>
+      <span style="font-size:14px;font-weight:700">${fmtR(tot)}</span>
+    </div>`;
+  }
+
+  // Fixas
+  const fl=document.getElementById('ct-list-fixas');
+  if(!DB.contasFixas.length){fl.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:12px">Nenhuma conta fixa</div>';}
+  else fl.innerHTML=DB.contasFixas.map(c=>contaRow(c,statusConta(c),mes)).join('');
+}
+
+function contaRow(c,st,mes){
+  const cor=st==='pago'?'green':st==='vencido'?'red':'yellow';
+  const label=st==='pago'?'Pago em '+(DB.pagamentos[c.id+'_'+mes]?.data||''):
+    st==='vencido'?`Venceu dia ${c.dia}`:
+    `Vence em ${diasVencer(c.dia)} dia(s)`;
+  const btnPagar=st!=='pago'?`<button class="btn btn-ghost btn-sm" onclick="openPag('${c.id}','${c.nome}',${c.valor})">PAGAR</button>`:'';
+  return`<div class="conta-row">
+    <div class="conta-indicator ${cor}"></div>
+    <div class="conta-info"><div class="conta-nome">${c.nome}</div><div class="conta-det">${label}</div></div>
+    <div class="conta-right">
+      <div class="conta-val ${cor!=='green'?cor:''}">${fmtR(c.valor)}</div>
+      <div style="display:flex;gap:4px;margin-top:4px">
+        ${btnPagar}
+        <button class="btn btn-ghost btn-sm" onclick="editFixa('${c.id}')" style="padding:4px 8px">✏️</button>
+        <button class="btn btn-sm" onclick="deleteFixa('${c.id}')" style="padding:4px 8px;background:#ff4d4d18;color:var(--red);border:1px solid #ff4d4d33">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══ MANUTENÇÃO ══
+function salvarOdometro(){
+  const km=parseFloat(document.getElementById('mn-km-inp').value);
+  const data=document.getElementById('mn-km-date').value;
+  if(!km||!data){toast('Preenche km e data');return}
+  const mes=data.substring(0,7);
+  const idx=DB.odometro.findIndex(o=>o.mes===mes);
+  const reg={km,data,mes};
+  if(idx>=0)DB.odometro[idx]=reg;else DB.odometro.push(reg);
+  document.getElementById('mn-km-inp').value='';
+  saveLocal();scheduleBackup('odometro');renderManut();toast('Odômetro salvo!');
+  const d=new Date(data+'T12:00:00');
+  if(d.getDate()===1)sendChat(`ODÔMETRO DIA 01 — ${mes}: ${km.toLocaleString('pt-BR')} km. Calcula o km do mês anterior e custo operacional.`);
+}
+function salvarManut(){
+  const tipo=document.getElementById('mn-tipo').value;
+  const desc=document.getElementById('mn-desc').value;
+  const custo=parseFloat(document.getElementById('mn-custo').value)||0;
+  const km=parseFloat(document.getElementById('mn-km-reg').value)||0;
+  const data=document.getElementById('mn-data').value;
+  const proxKm=parseFloat(document.getElementById('mn-prox').value)||0;
+  if(!custo){toast('Informa o custo');return}
+  DB.manutencoes.push({id:'m'+Date.now(),tipo,desc,custo,km,data,proxKm,mes:data?data.substring(0,7):mesAtual()});
+  closeModal('modal-manut');
+  ['mn-desc','mn-custo','mn-km-reg','mn-prox'].forEach(id=>document.getElementById(id).value='');
+  saveLocal();scheduleBackup('manutencao');renderManut();toast('Manutenção registrada!');
+}
+function renderManut(){
+  const odos=[...DB.odometro].sort((a,b)=>b.data.localeCompare(a.data));
+  const atual=odos[0];
+  document.getElementById('mn-km-atual').textContent=atual?atual.km.toLocaleString('pt-BR')+' km':'—';
+  document.getElementById('mn-km-data').textContent=atual?atual.data:'—';
+  // Show odometro history with delete
+  const odoHistEl=document.getElementById('mn-odo-hist');
+  if(odoHistEl){
+    if(!DB.odometro.length){odoHistEl.innerHTML='<div style="color:var(--t3);font-size:12px">Nenhum registro</div>';}
+    else{odoHistEl.innerHTML=[...DB.odometro].sort((a,b)=>b.data.localeCompare(a.data)).map(o=>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--t4)">
+        <div><div style="font-size:13px;font-weight:600">${o.km.toLocaleString('pt-BR')} km</div><div style="font-size:11px;color:var(--t2)">${o.data} · ${o.mes}</div></div>
+        <button class="btn btn-sm" onclick="deleteOdo('${o.mes}')" style="padding:4px 8px;background:#ff4d4d18;color:var(--red);border:1px solid #ff4d4d33">🗑</button>
+      </div>`).join('');
+    }
+  }
+  const mes=mesAtual();
+  const kmTrab=(DB.dias||[]).filter(d=>d.data.startsWith(mes)).reduce((s,d)=>s+d.km,0);
+  const combMes=(DB.dias||[]).filter(d=>d.data.startsWith(mes)).reduce((s,d)=>s+d.combustivel,0);
+  if(odos.length>=2){
+    const kmTot=atual.km-odos[1].km;
+    const kmPes=Math.max(0,kmTot-kmTrab);
+    const cComb=kmTot>0?combMes/kmTot:0;
+    const manutMes=DB.manutencoes.filter(m=>m.mes===mes).reduce((s,m)=>s+m.custo,0);
+    const parcCarro=DB.contasFixas.find(f=>f.nome.toLowerCase().includes('carro'));
+    const seg=DB.contasFixas.find(f=>f.nome.toLowerCase().includes('loovi')||f.nome.toLowerCase().includes('seguro'));
+    const cOp=kmTot>0?(combMes+manutMes+(parcCarro?.valor||0)+(seg?.valor||0))/kmTot:0;
+    document.getElementById('mn-km-tot').textContent=kmTot.toLocaleString('pt-BR')+' km';
+    document.getElementById('mn-km-trab').textContent=kmTrab.toLocaleString('pt-BR')+' km';
+    document.getElementById('mn-km-pes').textContent=kmPes.toLocaleString('pt-BR')+' km';
+    document.getElementById('mn-comb-km').textContent='R$ '+cComb.toFixed(3)+'/km';
+    document.getElementById('mn-op-km').textContent='R$ '+cOp.toFixed(3)+'/km';
+  }else{['mn-km-tot','mn-km-trab','mn-km-pes','mn-comb-km','mn-op-km'].forEach(id=>document.getElementById(id).textContent='—')}
+  // Próximas
+  const kmAtual=atual?atual.km:0;
+  const prox=DB.manutencoes.filter(m=>m.proxKm>0).map(m=>({...m,rest:m.proxKm-kmAtual})).sort((a,b)=>a.rest-b.rest);
+  const pl=document.getElementById('mn-proximas');
+  if(!prox.length){pl.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:12px">Nenhuma agendada</div>';}
+  else pl.innerHTML=prox.map(m=>{
+    const pct=m.km>0?Math.min(100,Math.max(0,((kmAtual-m.km)/(m.proxKm-m.km))*100)):0;
+    const cor=m.rest<=0?'crit':m.rest<=500?'crit':m.rest<=2000?'warn':'';
+    const icon=m.tipo.includes('óleo')?'🛢️':m.tipo.includes('Pneu')?'🔧':m.tipo.includes('Filtro')?'🔍':'⚙️';
+    return`<div class="manut-row">
+      <div class="manut-icon">${icon}</div>
+      <div class="manut-info">
+        <div class="manut-name">${m.tipo}${m.rest<=0?' <span style="color:var(--red);font-size:10px">VENCIDO</span>':m.rest<=500?' <span style="color:var(--yellow);font-size:10px">URGENTE</span>':''}</div>
+        <div class="manut-det">Próx: ${m.proxKm.toLocaleString('pt-BR')}km · Faltam: ${m.rest.toLocaleString('pt-BR')}km</div>
+        <div class="km-bar"><div class="km-fill ${cor}" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+  // Histórico
+  const hist=[...DB.manutencoes].sort((a,b)=>b.data.localeCompare(a.data)).slice(0,8);
+  const hl=document.getElementById('mn-hist');
+  if(!hist.length){hl.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:12px">Nenhuma manutenção</div>';}
+  else{
+    const totMes=DB.manutencoes.filter(m=>m.mes===mes).reduce((s,m)=>s+m.custo,0);
+    hl.innerHTML=hist.map(m=>`<div class="manut-row">
+      <div class="manut-info">
+        <div class="manut-name">${m.tipo}</div>
+        <div class="manut-det">${m.data||'—'} · ${m.km.toLocaleString('pt-BR')}km${m.desc?' · '+m.desc:''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="manut-cost">${fmtR(m.custo)}</div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm" onclick="editManut('${m.id}')" style="padding:3px 7px;font-size:11px">✏️</button>
+          <button class="btn btn-sm" onclick="deleteManut('${m.id}')" style="padding:3px 7px;font-size:11px;background:#ff4d4d18;color:var(--red);border:1px solid #ff4d4d33">🗑</button>
+        </div>
+      </div>
+    </div>`).join('')+
+    `<div class="divider"></div><div style="display:flex;justify-content:space-between"><span style="font-size:11px;font-weight:700;color:var(--t2)">TOTAL MÊS</span><span style="color:var(--yellow);font-weight:700">${fmtR(totMes)}</span></div>`;
+  }
+}
+
+// ══ DASHBOARD ══
+function renderDash(){
+  const mes=mesAtual();
+  const diasMes=(DB.dias||[]).filter(d=>d.data.startsWith(mes));const recMes2=(DB.receitas||[]).filter(r=>r.mes===mes);
+  const bruto=recMes2.reduce((s,r)=>s+r.valor,0);
+  const comb=diasMes.reduce((s,d)=>s+d.combustivel,0);
+  const liq=bruto-comb;
+  const km=diasMes.reduce((s,d)=>s+d.km,0);
+  const cpkm=km>0?comb/km:0;
+  const totalF=DB.contasFixas.reduce((s,f)=>s+f.valor,0);
+  const pagoF=DB.contasFixas.filter(f=>DB.pagamentos[f.id+'_'+mes]).reduce((s,f)=>s+f.valor,0);
+  const vars=DB.variaveis.filter(v=>v.mes===mes).reduce((s,v)=>s+v.valor,0);
+  const manutMes=DB.manutencoes.filter(m=>m.mes===mes).reduce((s,m)=>s+m.custo,0);
+  const sobra=liq-totalF-vars;
+  const odos=[...DB.odometro].sort((a,b)=>b.data.localeCompare(a.data));
+  const kmTot=odos.length>=2?odos[0].km-odos[1].km:km;
+  const parcCarro=DB.contasFixas.find(f=>f.nome.toLowerCase().includes('carro'));
+  const seg=DB.contasFixas.find(f=>f.nome.toLowerCase().includes('loovi')||f.nome.toLowerCase().includes('seguro'));
+  const cOp=kmTot>0?(comb+manutMes+(parcCarro?.valor||0)+(seg?.valor||0))/kmTot:0;
+  const sv=document.getElementById('d-sobra');
+  sv.textContent=fmtK(sobra);sv.style.color=sobra>=0?'var(--accent)':'var(--red)';
+  document.getElementById('d-bruto').textContent=fmtK(bruto);
+  document.getElementById('d-liq').textContent=fmtK(liq);
+  document.getElementById('d-div').textContent=fmtK(totalF);
+  document.getElementById('d-pago').textContent=fmtK(pagoF);
+  document.getElementById('d-ckm').textContent=cpkm>0?'R$ '+cpkm.toFixed(3)+'/km':'—';
+  document.getElementById('d-okm').textContent=cOp>0?'R$ '+cOp.toFixed(3)+'/km':'—';
+  const pct=Math.min(100,(bruto/DB.metaMensal)*100);
+  document.getElementById('d-meta-lbl').textContent=`${fmtK(bruto)} de ${fmtK(DB.metaMensal)}`;
+  document.getElementById('d-meta-pct').textContent=pct.toFixed(0)+'%';
+  const mb=document.getElementById('d-meta-bar');mb.style.width=pct+'%';
+  mb.className='pbar-fill'+(pct>=100?' over':pct>=70?' warn':'');
+  // Alertas
+  const alerts=[];
+  const venc=DB.contasFixas.filter(f=>statusConta(f)==='vencido');
+  if(venc.length)alerts.push({txt:`${venc.length} conta(s) vencida(s): ${venc.map(v=>v.nome).join(', ')}`,cor:'red'});
+  if(cpkm>0.90)alerts.push({txt:`Custo/km alto hoje: R$ ${cpkm.toFixed(3)}/km — verifica o carro`,cor:'yellow'});
+  if(sobra<0)alerts.push({txt:`Gastos superam faturamento em ${fmtR(Math.abs(sobra))}`,cor:'red'});
+  const pManut=DB.manutencoes.filter(m=>{const o=odos[0];return o&&m.proxKm&&(m.proxKm-o.km)<=1000});
+  if(pManut.length)alerts.push({txt:`Manutenção próxima: ${pManut.map(m=>m.tipo).join(', ')}`,cor:'yellow'});
+  const ac=document.getElementById('d-alert-card');
+  const al=document.getElementById('d-alerts');
+  if(alerts.length){
+    ac.style.display='block';
+    al.innerHTML=alerts.map(a=>`<div class="alert-item"><div class="alert-dot ${a.cor}"></div><div class="alert-text">${a.txt}</div></div>`).join('');
+  }else ac.style.display='none';
+  // Próximos
+  const prox=[...DB.contasFixas].filter(f=>statusConta(f)!=='pago').sort((a,b)=>a.dia-b.dia).slice(0,5);
+  const pl=document.getElementById('d-proximos');
+  if(!prox.length){pl.innerHTML='<div style="color:var(--t3);font-size:13px">Tudo em dia ✓</div>';return}
+  pl.innerHTML=prox.map(c=>{
+    const st=statusConta(c);
+    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--t4)">
+      <div><div style="font-size:14px;font-weight:600">${c.nome}</div><div style="font-size:11px;color:var(--t2);margin-top:2px">Dia ${c.dia}${st==='vencido'?' · VENCIDO':''}</div></div>
+      <span style="font-size:14px;font-weight:700;color:${st==='vencido'?'var(--red)':'var(--yellow)'}">${fmtR(c.valor)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ══ CHAT ══
+function buildSys(){
+  const mes=mesAtual();
+  const dias=(DB.dias||[]).filter(d=>d.data.startsWith(mes));
+  const recMesSys=(DB.receitas||[]).filter(r=>r.mes===mes);
+  const bruto=recMesSys.reduce((s,r)=>s+r.valor,0);
+  const comb=dias.reduce((s,d)=>s+d.combustivel,0);
+  const liq=bruto-comb;
+  const horas=dias.reduce((s,d)=>s+d.horas,0);
+  const km=dias.reduce((s,d)=>s+d.km,0);
+  const sem=semanaAtual();
+  const venc=DB.contasFixas.filter(f=>statusConta(f)==='vencido').map(f=>f.nome+' '+fmtR(f.valor)).join(', ')||'nenhuma';
+  const pagas=DB.contasFixas.filter(f=>statusConta(f)==='pago').length;
+  const odos=[...DB.odometro].sort((a,b)=>b.data.localeCompare(a.data));
+  const kmAtual=odos[0]?odos[0].km:'?';
+  const proxManut=DB.manutencoes.filter(m=>m.proxKm&&typeof kmAtual==='number'&&(m.proxKm-kmAtual)<=2000).map(m=>m.tipo).join(', ')||'nenhuma urgente';
+  return`IDENTIDADE
+Você é um construtor de riqueza. Não é motivador. Diagnostica, corrige e direciona com precisão.
+
+PERFIL — RICARDO
+29 anos. Motorista Uber/99/inDrive em SP. Casado (Isabela). Filha Luísa 2 anos. Único provedor. Odeia a Uber, quer sair — mas é sua única renda agora.
+Fase: SOBREVIVÊNCIA — parar o sangramento, controlar gastos, pagar dívidas urgentes.
+
+CONTEXTO COMPORTAMENTAL:
+- Criado sem pai presente. Padrasto Valmei: referência quebrada.
+- Padrão de sabotagem: começa projetos, abandona quando funciona. Medo de dar certo.
+- Ex-viciado em pornografia (parou set/2024). Ex-usuário de maconha (parou).
+- Impulsivo com dinheiro. Evita confronto. Empurra problemas.
+- Ponto forte: inteligente, resiliente, capaz de mudança real.
+
+DADOS EM TEMPO REAL — ${mes}:
+Bruto: ${fmtR(bruto)} | Combustível: ${fmtR(comb)} | Líquido: ${fmtR(liq)}
+Horas: ${horas.toFixed(1)}h | KM: ${km}km | R$/h: ${horas>0?fmtR(liq/horas):'-'}
+Semana atual: ${fmtR(sem.bruto)} de ${fmtR(DB.metaSemanal)} | Falta: ${fmtR(Math.max(0,DB.metaSemanal-sem.bruto))}
+Contas atrasadas: ${venc} | Pagas: ${pagas}/${DB.contasFixas.length}
+KM atual carro: ${kmAtual} | Manutenções próximas: ${proxManut}
+
+PRINCÍPIOS:
+- Verdade acima de conforto
+- Execução acima de intenção — intenção não paga dívida
+- Clareza numérica: "corte R$150 em alimentação fora" não "gaste menos"
+- Toda resposta termina com 1 ação específica com prazo
+
+ADAPTAÇÃO:
+- Engajado → metas agressivas, cobra mais
+- Travado → passos menores, clareza primeiro
+- Evitando → nomeia o padrão, mostra custo com números
+
+TOM: Direto, estratégico. Nunca ofensivo.
+
+FORMATAÇÃO — REGRA ABSOLUTA:
+NUNCA use #, ##, **, *, asteriscos, traços decorativos ou qualquer markdown.
+Use MAIÚSCULAS para destacar, não símbolos.
+Listas com travessão simples: — item
+Separe blocos com linha em branco.
+Estrutura máxima por resposta:
+DIAGNÓSTICO: (1-2 frases diretas)
+ANÁLISE: (máx 3 frases, com números reais)
+ORIENTAÇÃO: (passos práticos numerados simples)
+AÇÃO: (1 tarefa específica com prazo — sempre a última linha)
+Máximo 180 palavras por resposta.`;
+}
+
+function renderChat(){
+  const msgs=document.getElementById('chat-msgs');
+  const empty=document.getElementById('chat-empty');
+  if(!DB.chat.length){if(empty)empty.style.display='flex';return}
+  if(empty)empty.style.display='none';
+  msgs.innerHTML='';
+  DB.chat.forEach(m=>{
+    const div=document.createElement('div');
+    div.className=`msg ${m.role==='user'?'user':'coach'}`;
+    div.innerHTML=`<div class="bubble">${esc(m.content)}</div><div class="msg-time">${m.time||''}</div>`;
+    msgs.appendChild(div);
+  });
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  const c=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className='typing-wrap';d.id='typing';
+  d.innerHTML='<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove()}
+
+async function sendChat(override){
+  const inp=document.getElementById('chat-inp');
+  const txt=override!==undefined?override:inp.value.trim();
+  if(!txt)return;
+  if(override===undefined){inp.value='';inp.style.height='auto';}
+  const empty=document.getElementById('chat-empty');
+  if(empty)empty.style.display='none';
+  DB.chat.push({role:'user',content:txt,time:ts()});
+  DB.msgCount++;saveLocal();renderChat();
+  document.getElementById('chat-send').disabled=true;showTyping();
+  const apiMsgs=DB.chat.filter(m=>m.role==='user'||m.role==='assistant').slice(-30).map(m=>({role:m.role,content:m.content}));
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSys(),messages:apiMsgs})
+    });
+    const data=await r.json();
+    hideTyping();
+    DB.chat.push({role:'assistant',content:data.content?.[0]?.text||'Erro.',time:ts()});
+  }catch(e){hideTyping();DB.chat.push({role:'assistant',content:'Erro de conexão. Tenta de novo.',time:ts()});}
+  DB.msgCount++;saveLocal();renderChat();
+  document.getElementById('chat-send').disabled=false;
+  if(DB.msgCount%10===0)scheduleBackup('10_msgs');
+}
+
+// ══ EDITAR / EXCLUIR ══
+
+// --- OPERAÇÃO ---
+function editDia(data){
+  const d=DB.operacao.find(x=>x.data===data);if(!d)return;
+  document.getElementById('op-data').value=d.data;
+  document.getElementById('op-hi').value=d.hi||'00:00';
+  document.getElementById('op-hf').value=d.hf||'00:00';
+  document.getElementById('op-km').value=d.km||'';
+  document.getElementById('op-comb').value=d.combustivel||'';
+  DB.appEntries={
+    uber:{val:d.uber||0,corr:d.corrUber||0},
+    n99:{val:d.n99||0,corr:d.corr99||0},
+    indrive:{val:d.indrive||0,corr:d.corrInd||0}
+  };
+  ['uber','99','ind'].forEach(a=>{
+    const key=a==='99'?'n99':a==='ind'?'indrive':'uber';
+    document.getElementById(`${a}-preview`).textContent=fmtK(DB.appEntries[key].val);
+    document.getElementById(`${a}-corr-preview`).textContent=DB.appEntries[key].corr+' corridas';
+  });
+  // Vai para aba operação e rola ao topo
+  const navBtn=document.querySelectorAll('.nb')[1];
+  goPage('op',navBtn);
+  const pg=document.getElementById('page-op');
+  setTimeout(()=>{
+    pg.scrollTop=0;
+    const card=pg.querySelector('.card');
+    if(card){card.style.borderColor='var(--accent)';setTimeout(()=>card.style.borderColor='var(--border)',2500);}
+  },50);
+  toast('Campos preenchidos — edite e salve');
+}
+function deleteDia(data){
+  if(!confirm(`Excluir registro de ${data}?`))return;
+  DB.operacao=DB.operacao.filter(d=>d.data!==data);
+  saveLocal();scheduleBackup('delete_dia');renderOp();toast('Registro excluído');
+}
+
+// --- CONTAS FIXAS ---
+let editandoFixaId=null;
+function editFixa(id){
+  const c=DB.contasFixas.find(x=>x.id===id);if(!c)return;
+  editandoFixaId=id;
+  document.getElementById('mf-nome').value=c.nome;
+  document.getElementById('mf-val').value=c.valor;
+  document.getElementById('mf-dia').value=c.dia;
+  document.getElementById('mf-prio').value=c.prio;
+  openModal('modal-fixa');
+}
+function deleteFixa(id){
+  const c=DB.contasFixas.find(x=>x.id===id);
+  if(!confirm(`Excluir "${c?.nome}"?`))return;
+  DB.contasFixas=DB.contasFixas.filter(x=>x.id!==id);
+  // Remove pagamentos dessa conta
+  Object.keys(DB.pagamentos).forEach(k=>{if(k.startsWith(id))delete DB.pagamentos[k];});
+  saveLocal();scheduleBackup('delete_fixa');renderContas();toast('Conta excluída');
+}
+
+// --- VARIÁVEIS ---
+function deleteVar(id){
+  if(!confirm('Excluir este gasto?'))return;
+  DB.variaveis=DB.variaveis.filter(x=>x.id!==id);
+  saveLocal();scheduleBackup('delete_var');renderContas();toast('Gasto excluído');
+}
+function toggleVarPago(id){
+  const v=DB.variaveis.find(x=>x.id===id);if(!v)return;
+  v.pago=!v.pago;
+  saveLocal();scheduleBackup('toggle_var');renderContas();
+}
+
+// --- MANUTENÇÃO ---
+function deleteManut(id){
+  if(!confirm('Excluir esta manutenção?'))return;
+  DB.manutencoes=DB.manutencoes.filter(x=>x.id!==id);
+  saveLocal();scheduleBackup('delete_manut');renderManut();toast('Manutenção excluída');
+}
+function editManut(id){
+  const m=DB.manutencoes.find(x=>x.id===id);if(!m)return;
+  document.getElementById('mn-tipo').value=m.tipo;
+  document.getElementById('mn-desc').value=m.desc||'';
+  document.getElementById('mn-custo').value=m.custo;
+  document.getElementById('mn-km-reg').value=m.km;
+  document.getElementById('mn-data').value=m.data;
+  document.getElementById('mn-prox').value=m.proxKm||'';
+  // Remove old and let user re-save
+  DB.manutencoes=DB.manutencoes.filter(x=>x.id!==id);
+  saveLocal();openModal('modal-manut');toast('Edite e salve novamente');
+}
+
+// --- ODÔMETRO ---
+function deleteOdo(mes){
+  if(!confirm(`Excluir odômetro de ${mes}?`))return;
+  DB.odometro=DB.odometro.filter(o=>o.mes!==mes);
+  saveLocal();scheduleBackup('delete_odo');renderManut();toast('Odômetro excluído');
+}
+
+// ══ INIT ══
+loadLocal();
+document.getElementById('mrc-data').value=today();
+  document.getElementById('mdia-data').value=today();
+document.getElementById('mn-km-date').value=today();
+document.getElementById('mn-data').value=today();
+document.getElementById('mv-data').value=today();
+document.getElementById('mpag-data').value=today();
+renderChat();scheduleMidnight();checkDriveStatus();
+
+// Pré-carrega contas do Ricardo se ainda não tem
+if(!DB.contasFixas.length){
+  DB.contasFixas=[
+    {id:'f001',nome:'Financiamento Carro',valor:1785.94,dia:1,prio:1},
+    {id:'f002',nome:'Aluguel',valor:980,dia:5,prio:1},
+    {id:'f003',nome:'Convênio Médico',valor:867.22,dia:10,prio:1},
+    {id:'f004',nome:'Enel',valor:395,dia:10,prio:1},
+    {id:'f005',nome:'Seguro Loovi',valor:322.90,dia:15,prio:2},
+    {id:'f006',nome:'Vivo',valor:210,dia:21,prio:2},
+    {id:'f007',nome:'Sabesp',valor:180,dia:25,prio:2},
+    {id:'f008',nome:'Cartão Latam',valor:360,dia:20,prio:2},
+    {id:'f009',nome:'Empréstimo Nubank',valor:239.39,dia:20,prio:2},
+    {id:'f010',nome:'Empréstimo ML',valor:134.39,dia:28,prio:2},
+    {id:'f011',nome:'Shopee Isabella',valor:486.75,dia:31,prio:3},
+    {id:'f012',nome:'Shopee Ricardo',valor:650,dia:31,prio:3},
+    {id:'f013',nome:'YouTube Premium',valor:26.90,dia:15,prio:3},
+    {id:'f014',nome:'Tropa Motoristas',valor:50,dia:1,prio:3},
+  ];
+  saveLocal();
+}
+
+// Verifica dia 01
+const hoje=new Date();
+if(hoje.getDate()===1){
+  const mes=mesAtual();
+  if(!localStorage.getItem('odo_asked_'+mes)){
+    localStorage.setItem('odo_asked_'+mes,'1');
+    setTimeout(()=>sendChat(`Início de ${mes}! Qual o KM no odômetro agora?`),3000);
+  }
+}
+</script>
+</body>
+</html>
